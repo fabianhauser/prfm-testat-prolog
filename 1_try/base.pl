@@ -1,6 +1,3 @@
-member(X,[X|T]).
-member(X,[_|T]):- member(X,T).
-
 timeslot(X):- member(X,['8:00','9:00']).
 modul(X):- member(X,['PrFm','An2I']).
 durchfuehrung(X):- member(X,['PrFmV1','PrFmV2','An2IV1','An2IV2']).
