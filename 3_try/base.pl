@@ -39,16 +39,3 @@ stundenplan(
 sortedStundenplan(Sorted):-
 	stundenplan(S),
 	sort(2,@=<, S, Sorted).
-
-zeitLektionen(Zeit, Lektionen):-
-	stundenplan(Stundenplan),
-	zeitLektionen(Zeit, Stundenplan, Lektionen).
-
-zeitLektionen(Zeit, Stundenplan, []):-
-	\+ member(lektion(_, zeitslot(_, Zeit)), Stundenplan).
-
-zeitLektionen(Zeit, Stundenplan, [Lektion|Lektionen]):-
-	member(lektion(Lektion, zeitslot(_, Zeit)), Stundenplan),
-	delete(Stundenplan, lektion(Lektion, zeitslot(_, Zeit)), NewStundenplan),
-	zeitLektionen(Zeit, NewStundenplan, Lektionen).
-
