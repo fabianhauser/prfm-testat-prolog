@@ -1,21 +1,54 @@
-modulDurchfuehrung('PrFm', 'PrFmV1', 'Mo08:00').
-modulDurchfuehrung('PrFm', 'PrFmV2', 'Mo09:00').
-modulDurchfuehrung('An2I', 'An2IV1', 'Mo08:00').
-modulDurchfuehrung('An2I', 'An2IV2', 'Mo10:00').
-modulDurchfuehrung('CldInf', 'CldInfV1', 'Mo08:00').
-%modulDurchfuehrung('CldInf', 'CldInfV2', 'Mo09:00').
-modulDurchfuehrung('CldInf', 'CldInfV2', 'Mo10:00').
+zeitslot('Mo', '08:00').
+zeitslot('Mo', '09:00').
+zeitslot('Di', '08:00').
+zeitslot('Di', '09:00').
 
-stundenplan(Module, Stundenplan):- stundenplan(['Mo08:00','Mo09:00','Mo10:00'], Module, Stundenplan).
+lektion('PrFm', zeitslot('Mo', '08:00')).
+lektion('PrFm', zeitslot('Mo', '09:00')).
+lektion('An2I', zeitslot('Mo', '08:00')).
+lektion('An2I', zeitslot('Di', '08:00')).
+lektion('CldInf', zeitslot('Mo', '08:00')).
+%lektion('CldInf', zeitslot('Mo', '09:00')).
+lektion('CldInf', zeitslot('Di', '08:00')).
 
-stundenplan(_, [], _).
+stundenplan(Stundenplan):-
+	stundenplan(
+	  [ 'PrFm', 'An2I', 'CldInf' ],
+	  Stundenplan
+	).
+
+stundenplan(Module, Stundenplan):-
+	stundenplan(
+	  [ zeitslot('Mo', '08:00'),
+	    zeitslot('Mo', '09:00'),
+	    zeitslot('Di', '08:00')],
+	  Module, Stundenplan
+	).
+
+stundenplan(_, [], []).
 stundenplan(
     ZeitList,
     [Modul|ModulList],
     [lektion(Modul,Zeit)|Stundenplan]
   ) :-
 	member(Zeit, ZeitList),
-	modulDurchfuehrung(Modul, _, Zeit),
+	lektion(Modul, Zeit),
 	delete(ZeitList, Zeit, NewZeitList),
 	stundenplan(NewZeitList, ModulList, Stundenplan).
+
+sortedStundenplan(Sorted):-
+	stundenplan(S),
+	sort(2,@=<, S, Sorted).
+
+zeitLektionen(Zeit, Lektionen):-
+	stundenplan(Stundenplan),
+	zeitLektionen(Zeit, Stundenplan, Lektionen).
+
+zeitLektionen(Zeit, Stundenplan, []):-
+	\+ member(lektion(_, zeitslot(_, Zeit)), Stundenplan).
+
+zeitLektionen(Zeit, Stundenplan, [Lektion|Lektionen]):-
+	member(lektion(Lektion, zeitslot(_, Zeit)), Stundenplan),
+	delete(Stundenplan, lektion(Lektion, zeitslot(_, Zeit)), NewStundenplan),
+	zeitLektionen(Zeit, NewStundenplan, Lektionen).
 

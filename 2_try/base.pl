@@ -8,7 +8,7 @@ modulDurchfuehrung('CldInf', 'CldInfV2', 'Mo10:00').
 
 stundenplan(Module, Stundenplan):- stundenplan(['Mo08:00','Mo09:00','Mo10:00'], Module, Stundenplan).
 
-stundenplan(_, [], _).
+stundenplan(_, [], []).
 stundenplan(
     ZeitList,
     [Modul|ModulList],
