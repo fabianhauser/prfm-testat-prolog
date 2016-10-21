@@ -12,18 +12,26 @@ lektion('An2I', zeitslot('Di', '08:00')).
 lektion('CldInf', zeitslot('Mo', '08:00')).
 lektion('CldInf', zeitslot('Di', '08:00')).
 
+allLektionen(Lektionen):-
+	findall(L, lektion(L,_), LektionenBag),
+	sort(LektionenBag, Lektionen).
+
+allZeitslot(Zeitslots):-
+	findall(zeitslot(X,Y,Z), zeitslot(X,Y,Z), ZeitslotsBag),
+	sort(ZeitslotsBag, Zeitslots).
+
+
 stundenplan(Stundenplan):-
+	allLektionen(Lektionen), 
 	stundenplan(
-	  [ 'PrFm', 'An2I', 'CldInf' ],
+	  Lektionen,
 	  Stundenplan
 	).
 
 stundenplan(Module, Stundenplan):-
+	allZeitslot(Zeitslots),
 	stundenplan(
-	  [ zeitslot(1, 'Mo', '08:00'),
-	    zeitslot(2, 'Mo', '09:00'),
-	    zeitslot(3, 'Di', '08:00')],
-	  Module, Stundenplan
+	  Zeitslots, Module, Stundenplan
 	).
 
 stundenplan(_, [], []).
@@ -39,4 +47,5 @@ stundenplan(
 
 sortedStundenplan(Sorted):-
 	stundenplan(S),
-	sort(2,@=<, S, Sorted).
+	sort(2, @=<, S, Sorted).
+
